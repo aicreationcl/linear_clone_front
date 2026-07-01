@@ -2,7 +2,7 @@
 
 Clon funcional de [Linear](https://linear.app) construido con React 19 + Vite + TypeScript. Proyecto de portafolio MERN.
 
-**Demo en producción:** https://linear-clone-frontend-production.up.railway.app
+**Demo en producción:** https://linearclonefront-production.up.railway.app
 
 ## Features
 
