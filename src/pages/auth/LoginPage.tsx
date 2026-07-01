@@ -26,7 +26,7 @@ export default function LoginPage() {
       navigate('/', { replace: true })
     } catch (err) {
       const e = err as AxiosError<{ error: string }>
-      setError(e.response?.data?.error ?? 'Login failed. Check your credentials.')
+      setError(e.response?.data?.error ?? 'Error al iniciar sesión. Verifica tus credenciales.')
     } finally {
       setLoading(false)
     }
@@ -36,14 +36,14 @@ export default function LoginPage() {
     <AuthLayout>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="mb-6">
-          <h1 className="text-xl font-semibold text-content-primary mb-1">Sign in</h1>
+          <h1 className="text-xl font-semibold text-content-primary mb-1">Iniciar sesión</h1>
           <p className="text-content-secondary text-sm">
-            No account?{' '}
+            ¿No tienes cuenta?{' '}
             <Link
               to="/register"
               className="text-accent-violet hover:text-accent-violet-hover transition-colors"
             >
-              Create one
+              Créala aquí
             </Link>
           </p>
         </div>
@@ -56,7 +56,7 @@ export default function LoginPage() {
         )}
 
         <Input
-          label="Email"
+          label="Correo electrónico"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -66,7 +66,7 @@ export default function LoginPage() {
         />
 
         <Input
-          label="Password"
+          label="Contraseña"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -76,7 +76,7 @@ export default function LoginPage() {
         />
 
         <Button type="submit" loading={loading} size="md" className="w-full mt-2">
-          Sign in
+          Iniciar sesión
         </Button>
       </form>
     </AuthLayout>

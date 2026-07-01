@@ -27,7 +27,7 @@ export default function RegisterPage() {
       navigate('/', { replace: true })
     } catch (err) {
       const e = err as AxiosError<{ error: string }>
-      setError(e.response?.data?.error ?? 'Registration failed. Please try again.')
+      setError(e.response?.data?.error ?? 'Error al registrarse. Inténtalo de nuevo.')
     } finally {
       setLoading(false)
     }
@@ -37,14 +37,14 @@ export default function RegisterPage() {
     <AuthLayout>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="mb-6">
-          <h1 className="text-xl font-semibold text-content-primary mb-1">Create account</h1>
+          <h1 className="text-xl font-semibold text-content-primary mb-1">Crear cuenta</h1>
           <p className="text-content-secondary text-sm">
-            Already have an account?{' '}
+            ¿Ya tienes cuenta?{' '}
             <Link
               to="/login"
               className="text-accent-violet hover:text-accent-violet-hover transition-colors"
             >
-              Sign in
+              Inicia sesión
             </Link>
           </p>
         </div>
@@ -57,17 +57,17 @@ export default function RegisterPage() {
         )}
 
         <Input
-          label="Name"
+          label="Nombre"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
           autoComplete="name"
-          placeholder="Your full name"
+          placeholder="Tu nombre completo"
         />
 
         <Input
-          label="Email"
+          label="Correo electrónico"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -77,18 +77,18 @@ export default function RegisterPage() {
         />
 
         <Input
-          label="Password"
+          label="Contraseña"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={8}
           autoComplete="new-password"
-          placeholder="Min. 8 characters"
+          placeholder="Mín. 8 caracteres"
         />
 
         <Button type="submit" loading={loading} size="md" className="w-full mt-2">
-          Create account
+          Crear cuenta
         </Button>
       </form>
     </AuthLayout>

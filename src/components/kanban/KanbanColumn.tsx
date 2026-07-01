@@ -33,7 +33,7 @@ export default function KanbanColumn({ id, label, tasks, onTaskClick, onAddTask 
         <button
           onClick={onAddTask}
           className="ml-auto p-0.5 text-content-disabled hover:text-content-secondary hover:bg-surface-elevated rounded transition-colors"
-          title={`Add task to ${label}`}
+          title="Agregar tarea"
         >
           <Plus className="w-3.5 h-3.5" />
         </button>
@@ -48,7 +48,7 @@ export default function KanbanColumn({ id, label, tasks, onTaskClick, onAddTask 
         )}
       >
         {tasks.length === 0 && !isOver && (
-          <p className="text-center text-content-disabled text-xs py-6 px-2">No tasks</p>
+          <p className="text-center text-content-disabled text-xs py-6 px-2">Sin tareas</p>
         )}
         {tasks.map((task) => (
           <TaskCard key={task.id} task={task} onClick={() => onTaskClick(task.id)} />

@@ -55,12 +55,12 @@ export default function ListView({ tasks, onTaskClick, onAddTask }: Props) {
   if (tasks.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-3">
-        <p className="text-content-secondary text-sm">No tasks in this project</p>
+        <p className="text-content-secondary text-sm">Sin tareas en este proyecto</p>
         <button
           onClick={onAddTask}
           className="bg-accent-violet hover:bg-accent-violet-hover text-white text-xs px-3 py-1.5 rounded transition-colors"
         >
-          Create task
+          Crear tarea
         </button>
       </div>
     )
@@ -105,11 +105,11 @@ export default function ListView({ tasks, onTaskClick, onAddTask }: Props) {
       <table className="w-full text-sm">
         <thead className="sticky top-0 bg-surface">
           <tr className="text-xs border-b border-surface-border">
-            <SortHeader col="title" label="Title" />
-            <SortHeader col="status" label="Status" className="w-32" />
-            <SortHeader col="priority" label="Priority" className="w-28" />
-            <SortHeader col="dueDate" label="Due date" className="w-28" />
-            <th className="text-left font-medium pb-2 w-20 text-content-disabled">Assignee</th>
+            <SortHeader col="title" label="Título" />
+            <SortHeader col="status" label="Estado" className="w-32" />
+            <SortHeader col="priority" label="Prioridad" className="w-28" />
+            <SortHeader col="dueDate" label="Fecha límite" className="w-28" />
+            <th className="text-left font-medium pb-2 w-20 text-content-disabled">Asignado</th>
           </tr>
         </thead>
         <tbody>
@@ -133,7 +133,7 @@ export default function ListView({ tasks, onTaskClick, onAddTask }: Props) {
               <td className="py-2 pr-4">
                 <span className="text-content-disabled text-xs tabular-nums">
                   {task.dueDate
-                    ? task.dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                    ? task.dueDate.toLocaleDateString('es-CL', { month: 'short', day: 'numeric' })
                     : '—'}
                 </span>
               </td>

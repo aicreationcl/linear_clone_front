@@ -20,22 +20,22 @@ export default function ProjectsPage() {
     setError('')
     try {
       const project = await createProject.mutateAsync({ name, identifier })
-      toast.success('Project created')
+      toast.success('Proyecto creado')
       setShowForm(false)
       setName('')
       setIdentifier('')
       navigate(`/projects/${project.id}`)
     } catch (err) {
       const e = err as AxiosError<{ error: string }>
-      setError(e.response?.data?.error ?? 'Failed to create project')
-      toast.error('Failed to create project')
+      setError(e.response?.data?.error ?? 'Error al crear el proyecto')
+      toast.error('Error al crear el proyecto')
     }
   }
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-content-secondary text-sm">Loading…</div>
+        <div className="text-content-secondary text-sm">Cargando…</div>
       </div>
     )
   }
@@ -43,10 +43,10 @@ export default function ProjectsPage() {
   return (
     <div className="p-8 max-w-2xl">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-semibold text-content-primary">Projects</h1>
+        <h1 className="text-xl font-semibold text-content-primary">Proyectos</h1>
         {!showForm && (
           <Button variant="primary" size="sm" onClick={() => setShowForm(true)}>
-            New project
+            Nuevo proyecto
           </Button>
         )}
       </div>
@@ -56,7 +56,7 @@ export default function ProjectsPage() {
           onSubmit={handleCreate}
           className="mb-6 p-4 bg-surface-overlay border border-surface-border rounded-md space-y-3"
         >
-          <h2 className="text-content-primary text-sm font-medium">Create project</h2>
+          <h2 className="text-content-primary text-sm font-medium">Crear proyecto</h2>
 
           {error && (
             <div className="flex items-center gap-2 text-red-400 text-xs bg-red-400/8 border border-red-400/20 px-3 py-2 rounded">
@@ -66,21 +66,21 @@ export default function ProjectsPage() {
 
           <Input
             autoFocus
-            label="Project name"
+            label="Nombre del proyecto"
             value={name}
             onChange={(e) => {
               setName(e.target.value)
               if (!identifier) setIdentifier(e.target.value.slice(0, 3).toUpperCase())
             }}
-            placeholder="My project"
+            placeholder="Mi proyecto"
             required
           />
 
           <Input
-            label="Identifier"
+            label="Identificador"
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value.toUpperCase())}
-            placeholder="e.g. LIN"
+            placeholder="ej. LIN"
             required
             maxLength={5}
             className="uppercase"
@@ -96,17 +96,17 @@ export default function ProjectsPage() {
                 setError('')
               }}
             >
-              Cancel
+              Cancelar
             </Button>
             <Button type="submit" variant="primary" size="sm" loading={createProject.isPending}>
-              Create
+              Crear
             </Button>
           </div>
         </form>
       )}
 
       {projects.length === 0 ? (
-        <p className="text-content-secondary text-sm">No projects yet. Create your first one.</p>
+        <p className="text-content-secondary text-sm">Aún no hay proyectos. Crea el primero.</p>
       ) : (
         <ul className="space-y-2">
           {projects.map((p) => (

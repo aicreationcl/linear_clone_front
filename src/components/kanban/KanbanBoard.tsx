@@ -16,10 +16,10 @@ import { PriorityBadge } from '../ui/Badge'
 import clsx from 'clsx'
 
 const COLUMNS: { id: TaskStatus; label: string }[] = [
-  { id: 'backlog', label: 'Backlog' },
-  { id: 'todo', label: 'To Do' },
-  { id: 'doing', label: 'In Progress' },
-  { id: 'done', label: 'Done' },
+  { id: 'backlog', label: 'Pendiente' },
+  { id: 'todo', label: 'Por hacer' },
+  { id: 'doing', label: 'En curso' },
+  { id: 'done', label: 'Hecho' },
 ]
 
 const FILTER_PRIORITIES: TaskPriority[] = ['urgent', 'high', 'medium', 'low']
@@ -59,7 +59,7 @@ export default function KanbanBoard({ tasks, projectId, onTaskClick, onAddTask }
           className="text-content-disabled text-[11px] mr-1 font-semibold uppercase tracking-[0.06em]"
           style={{ fontFamily: 'var(--font-mono)' }}
         >
-          Filter
+          Filtrar
         </span>
         {FILTER_PRIORITIES.map((p) => (
           <button
@@ -80,7 +80,7 @@ export default function KanbanBoard({ tasks, projectId, onTaskClick, onAddTask }
             onClick={() => setFilter('priority', null)}
             className="ml-1 text-content-disabled text-xs hover:text-content-secondary transition-colors"
           >
-            ✕ Clear
+            ✕ Limpiar
           </button>
         )}
       </div>

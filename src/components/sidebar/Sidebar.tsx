@@ -39,7 +39,7 @@ export default function Sidebar() {
             </svg>
           </div>
           <span className="text-content-primary font-medium text-sm truncate flex-1 text-left">
-            {user?.name ?? 'Workspace'}
+            {user?.name ?? 'Espacio de trabajo'}
           </span>
           <ChevronDown className="w-3.5 h-3.5 text-content-disabled opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
         </button>
@@ -51,11 +51,11 @@ export default function Sidebar() {
           className="text-content-disabled text-[10px] font-semibold uppercase tracking-[0.08em] px-2 py-1 mb-1"
           style={{ fontFamily: 'var(--font-mono)' }}
         >
-          Projects
+          Proyectos
         </p>
 
         {projects.length === 0 && (
-          <p className="text-content-disabled text-xs px-2 py-1.5 italic">No projects yet</p>
+          <p className="text-content-disabled text-xs px-2 py-1.5 italic">Sin proyectos</p>
         )}
 
         {projects.map((p) => {
@@ -112,7 +112,7 @@ export default function Sidebar() {
           <button
             onClick={logout}
             className="opacity-0 group-hover:opacity-100 text-content-disabled hover:text-content-secondary transition-all"
-            title="Sign out"
+            title="Cerrar sesión"
           >
             <LogOut className="w-3.5 h-3.5" />
           </button>

@@ -32,14 +32,14 @@ export default class ErrorBoundary extends Component<Props, State> {
             <span className="text-red-400 text-lg">!</span>
           </div>
           <div>
-            <p className="text-content-primary text-sm font-medium mb-1">Something went wrong</p>
+            <p className="text-content-primary text-sm font-medium mb-1">Algo salió mal</p>
             <p className="text-content-secondary text-xs max-w-xs">{this.state.message}</p>
           </div>
           <button
             onClick={this.handleReload}
             className="text-xs px-3 py-1.5 bg-surface-elevated border border-surface-border rounded text-content-primary hover:bg-surface-border transition-colors"
           >
-            Reload page
+            Recargar página
           </button>
         </div>
       )

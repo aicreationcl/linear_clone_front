@@ -19,19 +19,19 @@ const STATUS_CONFIG: Record<
   { label: string; Icon: React.FC<{ className?: string }>; color: string; bg: string }
 > = {
   backlog: {
-    label: 'Backlog',
+    label: 'Pendiente',
     Icon: CircleDashed,
     color: 'text-status-backlog',
     bg: 'bg-status-backlog/15',
   },
-  todo: { label: 'To Do', Icon: Circle, color: 'text-status-todo', bg: 'bg-status-todo/15' },
+  todo: { label: 'Por hacer', Icon: Circle, color: 'text-status-todo', bg: 'bg-status-todo/15' },
   doing: {
-    label: 'In Progress',
+    label: 'En curso',
     Icon: CircleDot,
     color: 'text-status-doing',
     bg: 'bg-status-doing/15',
   },
-  done: { label: 'Done', Icon: CircleCheck, color: 'text-status-done', bg: 'bg-status-done/15' },
+  done: { label: 'Hecho', Icon: CircleCheck, color: 'text-status-done', bg: 'bg-status-done/15' },
 }
 
 export function StatusBadge({ status }: { status: TaskStatus }) {
@@ -56,11 +56,11 @@ const PRIORITY_CONFIG: Record<
   TaskPriority,
   { label: string; Icon: React.FC<{ className?: string }>; color: string }
 > = {
-  none: { label: 'None', Icon: Minus, color: 'text-content-disabled' },
-  low: { label: 'Low', Icon: ChevronDown, color: 'text-priority-low' },
-  medium: { label: 'Medium', Icon: ChevronRight, color: 'text-priority-medium' },
-  high: { label: 'High', Icon: ChevronUp, color: 'text-priority-high' },
-  urgent: { label: 'Urgent', Icon: Zap, color: 'text-priority-urgent' },
+  none: { label: 'Sin prioridad', Icon: Minus, color: 'text-content-disabled' },
+  low: { label: 'Baja', Icon: ChevronDown, color: 'text-priority-low' },
+  medium: { label: 'Media', Icon: ChevronRight, color: 'text-priority-medium' },
+  high: { label: 'Alta', Icon: ChevronUp, color: 'text-priority-high' },
+  urgent: { label: 'Urgente', Icon: Zap, color: 'text-priority-urgent' },
 }
 
 interface PriorityBadgeProps {

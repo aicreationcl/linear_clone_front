@@ -46,7 +46,7 @@ export default function CommandPalette({ open, onClose }: Props) {
             >
               <Search className="w-4 h-4 text-content-disabled flex-shrink-0" />
               <Command.Input
-                placeholder="Search projects and actions…"
+                placeholder="Buscar proyectos y acciones…"
                 className="flex-1 py-3.5 bg-transparent text-sm text-content-primary placeholder:text-content-disabled focus:outline-none"
               />
               <kbd
@@ -60,12 +60,12 @@ export default function CommandPalette({ open, onClose }: Props) {
             {/* Results */}
             <Command.List className="max-h-72 overflow-y-auto scrollbar-thin p-1.5">
               <Command.Empty className="px-4 py-8 text-center text-content-secondary text-sm">
-                No results found.
+                Sin resultados.
               </Command.Empty>
 
               {projects.length > 0 && (
                 <Command.Group
-                  heading="Projects"
+                  heading="Proyectos"
                   className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:pt-2 [&_[cmdk-group-heading]]:pb-1 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:text-content-disabled [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.08em]"
                   style={{ '--font-mono': 'var(--font-mono)' } as React.CSSProperties}
                 >
@@ -103,7 +103,7 @@ export default function CommandPalette({ open, onClose }: Props) {
                   className="flex items-center gap-2.5 px-2.5 py-2 text-sm text-content-secondary rounded-md cursor-pointer outline-none select-none data-[selected=true]:bg-surface-elevated data-[selected=true]:text-content-primary transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span className="flex-1">New task</span>
+                  <span className="flex-1">Nueva tarea</span>
                   <kbd
                     className="text-[10px] text-content-disabled px-1.5 py-0.5 rounded border border-surface-border"
                     style={{ fontFamily: 'var(--font-mono)', background: 'rgba(42,42,50,0.5)' }}
@@ -117,7 +117,7 @@ export default function CommandPalette({ open, onClose }: Props) {
                   className="flex items-center gap-2.5 px-2.5 py-2 text-sm text-content-secondary rounded-md cursor-pointer outline-none select-none data-[selected=true]:bg-surface-elevated data-[selected=true]:text-content-primary transition-colors"
                 >
                   <LayoutGrid className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span className="flex-1">Switch to Board</span>
+                  <span className="flex-1">Ver tablero</span>
                   <kbd
                     className="text-[10px] text-content-disabled px-1.5 py-0.5 rounded border border-surface-border"
                     style={{ fontFamily: 'var(--font-mono)', background: 'rgba(42,42,50,0.5)' }}
@@ -131,7 +131,7 @@ export default function CommandPalette({ open, onClose }: Props) {
                   className="flex items-center gap-2.5 px-2.5 py-2 text-sm text-content-secondary rounded-md cursor-pointer outline-none select-none data-[selected=true]:bg-surface-elevated data-[selected=true]:text-content-primary transition-colors"
                 >
                   <List className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span className="flex-1">Switch to List</span>
+                  <span className="flex-1">Ver lista</span>
                   <kbd
                     className="text-[10px] text-content-disabled px-1.5 py-0.5 rounded border border-surface-border"
                     style={{ fontFamily: 'var(--font-mono)', background: 'rgba(42,42,50,0.5)' }}
@@ -149,8 +149,8 @@ export default function CommandPalette({ open, onClose }: Props) {
             >
               {(
                 [
-                  ['↑↓', 'navigate'],
-                  ['↵', 'select'],
+                  ['↑↓', 'navegar'],
+                  ['↵', 'seleccionar'],
                 ] as const
               ).map(([key, label]) => (
                 <span

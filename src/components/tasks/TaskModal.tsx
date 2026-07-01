@@ -17,17 +17,17 @@ const STATUSES: TaskStatus[] = ['backlog', 'todo', 'doing', 'done']
 const PRIORITIES: TaskPriority[] = ['none', 'low', 'medium', 'high', 'urgent']
 
 const STATUS_LABELS: Record<TaskStatus, string> = {
-  backlog: 'Backlog',
-  todo: 'To Do',
-  doing: 'In Progress',
-  done: 'Done',
+  backlog: 'Pendiente',
+  todo: 'Por hacer',
+  doing: 'En curso',
+  done: 'Hecho',
 }
 const PRIORITY_LABELS: Record<TaskPriority, string> = {
-  none: 'None',
-  low: 'Low',
-  medium: 'Medium',
-  high: 'High',
-  urgent: 'Urgent',
+  none: 'Sin prioridad',
+  low: 'Baja',
+  medium: 'Media',
+  high: 'Alta',
+  urgent: 'Urgente',
 }
 
 interface Props {
@@ -79,14 +79,14 @@ export default function TaskModal({ projectId, taskId, onClose }: Props) {
           id: task.id,
           data: { title, description, status, priority },
         })
-        toast.success('Task updated')
+        toast.success('Tarea actualizada')
       } else {
         await createTask.mutateAsync({ title, description, status, priority, projectId })
-        toast.success('Task created')
+        toast.success('Tarea creada')
       }
       onClose()
     } catch {
-      toast.error(isEditing ? 'Failed to update task' : 'Failed to create task')
+      toast.error(isEditing ? 'Error al actualizar la tarea' : 'Error al crear la tarea')
     }
   }
 
@@ -94,10 +94,10 @@ export default function TaskModal({ projectId, taskId, onClose }: Props) {
     if (!task) return
     try {
       await deleteTask.mutateAsync(task.id)
-      toast.success('Task deleted')
+      toast.success('Tarea eliminada')
       onClose()
     } catch {
-      toast.error('Failed to delete task')
+      toast.error('Error al eliminar la tarea')
     }
   }
 
@@ -126,14 +126,14 @@ export default function TaskModal({ projectId, taskId, onClose }: Props) {
                   autoFocus
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Task title"
+                  placeholder="Título de la tarea"
                   required
                   className="w-full bg-transparent text-content-primary text-base font-medium placeholder:text-content-disabled focus:outline-none"
                 />
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Add description…"
+                  placeholder="Agregar descripción…"
                   rows={3}
                   className="w-full bg-transparent text-content-secondary text-sm placeholder:text-content-disabled resize-none focus:outline-none"
                 />
@@ -224,13 +224,13 @@ export default function TaskModal({ projectId, taskId, onClose }: Props) {
                     onClick={handleDelete}
                     loading={deleteTask.isPending}
                   >
-                    Delete
+                    Eliminar
                   </Button>
                 )}
                 <div className={clsx('flex gap-2', isEditing ? '' : 'ml-auto')}>
                   <Dialog.Close asChild>
                     <Button type="button" variant="ghost" size="sm">
-                      Cancel
+                      Cancelar
                     </Button>
                   </Dialog.Close>
                   <Button
@@ -240,7 +240,7 @@ export default function TaskModal({ projectId, taskId, onClose }: Props) {
                     loading={isPending}
                     disabled={!title.trim()}
                   >
-                    {isEditing ? 'Save' : 'Create task'}
+                    {isEditing ? 'Guardar' : 'Crear tarea'}
                   </Button>
                 </div>
               </div>

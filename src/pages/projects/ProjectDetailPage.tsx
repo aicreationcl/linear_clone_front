@@ -22,7 +22,7 @@ export default function ProjectDetailPage() {
   if (projectLoading) {
     return (
       <div className="flex items-center justify-center h-full text-content-secondary text-sm">
-        Loading…
+        Cargando…
       </div>
     )
   }
@@ -30,7 +30,7 @@ export default function ProjectDetailPage() {
   if (!project) {
     return (
       <div className="flex items-center justify-center h-full text-content-secondary text-sm">
-        Project not found
+        Proyecto no encontrado
       </div>
     )
   }
@@ -76,7 +76,7 @@ export default function ProjectDetailPage() {
                   : 'text-content-disabled hover:text-content-secondary'
               )}
             >
-              Board
+              Tablero
             </button>
             <button
               onClick={() => setViewMode('list')}
@@ -87,7 +87,7 @@ export default function ProjectDetailPage() {
                   : 'text-content-disabled hover:text-content-secondary'
               )}
             >
-              List
+              Lista
             </button>
           </div>
           <button
@@ -104,7 +104,7 @@ export default function ProjectDetailPage() {
               ;(e.currentTarget as HTMLElement).style.boxShadow = '0 0 8px rgba(94,106,210,0.3)'
             }}
           >
-            New task
+            Nueva tarea
           </button>
         </div>
       </header>
@@ -112,7 +112,7 @@ export default function ProjectDetailPage() {
       <div className="flex-1 overflow-hidden">
         {tasksLoading ? (
           <div className="flex items-center justify-center h-full text-content-secondary text-sm">
-            Loading tasks…
+            Cargando tareas…
           </div>
         ) : viewMode === 'kanban' ? (
           <KanbanBoard
