@@ -21,7 +21,10 @@ const mockProject = {
   updatedAt: '2026-01-01T00:00:00.000Z',
 }
 
-const mockTasks = [
+// Mutable so create/update/delete handlers below actually persist across
+// requests within a session — a static array would make e.g. drag-and-drop
+// status changes revert after the next GET /tasks refetch.
+const mockTasks: Record<string, unknown>[] = [
   {
     id: 'task-1',
     title: 'Set up project',
@@ -109,53 +112,50 @@ export const handlers = [
   }),
 
   http.get(`${API_URL}/tasks/:id`, ({ params }) => {
-    const task = mockTasks.find((t) => t.id === params.id) ?? mockTasks[0]
-    return HttpResponse.json({ data: { ...task, id: params.id } })
+    const task = mockTasks.find((t) => t.id === params.id)
+    if (!task) return HttpResponse.json({ error: 'Task not found' }, { status: 404 })
+    return HttpResponse.json({ data: task })
   }),
 
   http.post(`${API_URL}/tasks`, async ({ request }) => {
     const { assigneeId, ...body } = (await request.json()) as Record<string, unknown>
-    return HttpResponse.json(
-      {
-        data: {
-          id: `task-${Date.now()}`,
-          title: body.title ?? 'New Task',
-          description: body.description ?? '',
-          status: body.status ?? 'backlog',
-          priority: body.priority ?? 'none',
-          project: body.project ?? 'project-1',
-          assignee: assigneeId ? mockUser : undefined,
-          dueDate: body.dueDate,
-          reporter: 'user-1',
-          order: 1,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      },
-      { status: 201 }
-    )
+    const task = {
+      id: `task-${Date.now()}`,
+      title: body.title ?? 'New Task',
+      description: body.description ?? '',
+      status: body.status ?? 'backlog',
+      priority: body.priority ?? 'none',
+      project: body.project ?? 'project-1',
+      assignee: assigneeId ? mockUser : undefined,
+      dueDate: body.dueDate,
+      reporter: 'user-1',
+      order: mockTasks.length,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+    mockTasks.push(task)
+    return HttpResponse.json({ data: task }, { status: 201 })
   }),
 
   http.patch(`${API_URL}/tasks/:id`, async ({ params, request }) => {
     const { assigneeId, ...body } = (await request.json()) as Record<string, unknown>
-    const task = mockTasks.find((t) => t.id === params.id) ?? mockTasks[0]
-    return HttpResponse.json({
-      data: {
-        ...task,
-        ...body,
-        assignee: assigneeId ? mockUser : undefined,
-        id: params.id,
-      },
-    })
+    const task = mockTasks.find((t) => t.id === params.id)
+    if (!task) return HttpResponse.json({ error: 'Task not found' }, { status: 404 })
+    Object.assign(task, body, { assignee: assigneeId ? mockUser : undefined })
+    return HttpResponse.json({ data: task })
   }),
 
   http.patch(`${API_URL}/tasks/:id/status`, async ({ params, request }) => {
     const body = (await request.json()) as Record<string, unknown>
-    const task = mockTasks.find((t) => t.id === params.id) ?? mockTasks[0]
-    return HttpResponse.json({ data: { ...task, ...body, id: params.id } })
+    const task = mockTasks.find((t) => t.id === params.id)
+    if (!task) return HttpResponse.json({ error: 'Task not found' }, { status: 404 })
+    Object.assign(task, body)
+    return HttpResponse.json({ data: task })
   }),
 
-  http.delete(`${API_URL}/tasks/:id`, () => {
+  http.delete(`${API_URL}/tasks/:id`, ({ params }) => {
+    const index = mockTasks.findIndex((t) => t.id === params.id)
+    if (index !== -1) mockTasks.splice(index, 1)
     return HttpResponse.json({ data: null })
   }),
 ]

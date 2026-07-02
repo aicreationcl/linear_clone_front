@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '../lib/api'
 import { toUITask, toUITasks } from '../lib/transformers/task.transformer'
+import { toast } from '../stores/toast.store'
 import type {
   APITask,
   ListResponse,
@@ -8,6 +9,7 @@ import type {
   TaskStatus,
   TaskPriority,
 } from '../types/api.types'
+import type { UITask } from '../types/ui.types'
 
 export const tasksKey = (projectId: string) => ['tasks', projectId] as const
 
@@ -78,6 +80,18 @@ export function useUpdateTaskStatus(projectId: string) {
     }) => {
       const res = await api.patch<ItemResponse<APITask>>(`/tasks/${id}/status`, { status, order })
       return toUITask(res.data.data)
+    },
+    onMutate: async ({ id, status }) => {
+      await qc.cancelQueries({ queryKey: tasksKey(projectId) })
+      const previousTasks = qc.getQueryData<UITask[]>(tasksKey(projectId))
+      qc.setQueryData<UITask[]>(tasksKey(projectId), (old) =>
+        old?.map((t) => (t.id === id ? { ...t, status } : t))
+      )
+      return { previousTasks }
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousTasks) qc.setQueryData(tasksKey(projectId), context.previousTasks)
+      toast.error('No se pudo mover la tarea')
     },
     onSettled: () => qc.invalidateQueries({ queryKey: tasksKey(projectId) }),
   })

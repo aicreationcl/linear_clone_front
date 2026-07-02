@@ -1,5 +1,8 @@
+import { useState } from 'react'
 import {
   DndContext,
+  DragOverlay,
+  type DragStartEvent,
   type DragEndEvent,
   PointerSensor,
   useSensor,
@@ -12,6 +15,7 @@ import type { TaskStatus, TaskPriority } from '../../types/api.types'
 import { useUpdateTaskStatus } from '../../hooks/useTasks'
 import { useFilterStore } from '../../stores/filter.store'
 import KanbanColumn from './KanbanColumn'
+import { TaskCardOverlay } from './TaskCard'
 import { PriorityBadge } from '../ui/Badge'
 import clsx from 'clsx'
 
@@ -35,8 +39,14 @@ export default function KanbanBoard({ tasks, projectId, onTaskClick, onAddTask }
   const updateStatus = useUpdateTaskStatus(projectId)
   const { filters, setFilter } = useFilterStore()
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
+  const [activeTask, setActiveTask] = useState<UITask | null>(null)
+
+  function handleDragStart(event: DragStartEvent) {
+    setActiveTask(tasks.find((t) => t.id === event.active.id) ?? null)
+  }
 
   function handleDragEnd(event: DragEndEvent) {
+    setActiveTask(null)
     const { active, over } = event
     if (!over || active.id === over.id) return
     const taskId = active.id as string
@@ -86,7 +96,13 @@ export default function KanbanBoard({ tasks, projectId, onTaskClick, onAddTask }
       </div>
 
       {/* Board */}
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragCancel={() => setActiveTask(null)}
+      >
         <div className="flex gap-4 p-6 flex-1 overflow-x-auto board-bg scrollbar-thin">
           {COLUMNS.map((col) => {
             const columnTasks = filtered.filter((t) => t.status === col.id)
@@ -107,6 +123,7 @@ export default function KanbanBoard({ tasks, projectId, onTaskClick, onAddTask }
             )
           })}
         </div>
+        <DragOverlay>{activeTask && <TaskCardOverlay task={activeTask} />}</DragOverlay>
       </DndContext>
     </div>
   )

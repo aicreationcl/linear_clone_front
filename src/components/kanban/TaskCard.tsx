@@ -14,6 +14,40 @@ const PRIORITY_STRIPE: Record<TaskPriority, string> = {
   urgent: '#dc2626',
 }
 
+function CardBody({ task }: { task: UITask }) {
+  return (
+    <>
+      {/* Priority stripe */}
+      <div
+        className="w-0.5 flex-shrink-0"
+        style={{ backgroundColor: PRIORITY_STRIPE[task.priority] }}
+      />
+
+      {/* Card body */}
+      <div className="flex-1 p-3 min-w-0">
+        <p className="text-content-primary text-[13px] leading-snug mb-2.5 line-clamp-2 font-medium">
+          {task.title}
+        </p>
+
+        <div className="flex items-center gap-2 flex-wrap">
+          <PriorityBadge priority={task.priority} showLabel />
+
+          {task.dueDate && (
+            <span
+              className="text-content-disabled text-[11px]"
+              style={{ fontFamily: 'var(--font-mono)' }}
+            >
+              {task.dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+            </span>
+          )}
+
+          {task.assignee && <Avatar name={task.assignee.name} size="sm" className="ml-auto" />}
+        </div>
+      </div>
+    </>
+  )
+}
+
 interface Props {
   task: UITask
   onClick: () => void
@@ -61,33 +95,24 @@ export default function TaskCard({ task, onClick }: Props) {
         }
       }}
     >
-      {/* Priority stripe */}
-      <div
-        className="w-0.5 flex-shrink-0"
-        style={{ backgroundColor: PRIORITY_STRIPE[task.priority] }}
-      />
+      <CardBody task={task} />
+    </div>
+  )
+}
 
-      {/* Card body */}
-      <div className="flex-1 p-3 min-w-0">
-        <p className="text-content-primary text-[13px] leading-snug mb-2.5 line-clamp-2 font-medium">
-          {task.title}
-        </p>
-
-        <div className="flex items-center gap-2 flex-wrap">
-          <PriorityBadge priority={task.priority} showLabel />
-
-          {task.dueDate && (
-            <span
-              className="text-content-disabled text-[11px]"
-              style={{ fontFamily: 'var(--font-mono)' }}
-            >
-              {task.dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-            </span>
-          )}
-
-          {task.assignee && <Avatar name={task.assignee.name} size="sm" className="ml-auto" />}
-        </div>
-      </div>
+/** Floating card rendered inside dnd-kit's <DragOverlay>, following the cursor. */
+export function TaskCardOverlay({ task }: { task: UITask }) {
+  return (
+    <div
+      style={{
+        width: 272,
+        background: 'linear-gradient(160deg, #26262e 0%, #1e1e24 100%)',
+        border: '1px solid rgba(94,106,210,0.5)',
+        boxShadow: '0 20px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(94,106,210,0.25)',
+      }}
+      className="flex overflow-hidden rounded-md rotate-2 cursor-grabbing"
+    >
+      <CardBody task={task} />
     </div>
   )
 }
