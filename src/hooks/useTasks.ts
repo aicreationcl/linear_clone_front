@@ -26,7 +26,7 @@ interface UpdateTaskInput {
   description?: string
   status?: TaskStatus
   priority?: TaskPriority
-  assigneeId?: string
+  assigneeId?: string | null
   dueDate?: string | null
 }
 

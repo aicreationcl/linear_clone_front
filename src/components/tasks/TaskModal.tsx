@@ -87,23 +87,30 @@ export default function TaskModal({ projectId, taskId, members = [], onClose }: 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!title.trim()) return
-    const shared = {
-      title,
-      description,
-      status,
-      priority,
-      assigneeId: assigneeId || undefined,
-      dueDate: dueDate || undefined,
-    }
     try {
       if (isEditing && task) {
         await updateTask.mutateAsync({
           id: task.id,
-          data: { ...shared, dueDate: dueDate || null },
+          data: {
+            title,
+            description,
+            status,
+            priority,
+            assigneeId: assigneeId || null,
+            dueDate: dueDate || null,
+          },
         })
         toast.success('Tarea actualizada')
       } else {
-        await createTask.mutateAsync({ ...shared, projectId })
+        await createTask.mutateAsync({
+          title,
+          description,
+          status,
+          priority,
+          projectId,
+          assigneeId: assigneeId || undefined,
+          dueDate: dueDate || undefined,
+        })
         toast.success('Tarea creada')
       }
       onClose()
