@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
-import { X } from 'lucide-react'
+import { X, User } from 'lucide-react'
 import { useCreateTask, useUpdateTask, useDeleteTask } from '../../hooks/useTasks'
 import { useUIStore } from '../../stores/ui.store'
 import { toast } from '../../stores/toast.store'
 import api from '../../lib/api'
 import { toUITask } from '../../lib/transformers/task.transformer'
-import type { UITask } from '../../types/ui.types'
+import type { UITask, UIUser } from '../../types/ui.types'
 import type { TaskStatus, TaskPriority, ItemResponse, APITask } from '../../types/api.types'
 import { StatusBadge, PriorityBadge } from '../ui/Badge'
 import Button from '../ui/Button'
 import Spinner from '../ui/Spinner'
+import Avatar from '../ui/Avatar'
 import clsx from 'clsx'
 
 const STATUSES: TaskStatus[] = ['backlog', 'todo', 'doing', 'done']
@@ -30,13 +31,19 @@ const PRIORITY_LABELS: Record<TaskPriority, string> = {
   urgent: 'Urgente',
 }
 
+function toDateInputValue(date: Date | null): string {
+  if (!date) return ''
+  return date.toISOString().slice(0, 10)
+}
+
 interface Props {
   projectId: string
   taskId?: string
+  members?: UIUser[]
   onClose: () => void
 }
 
-export default function TaskModal({ projectId, taskId, onClose }: Props) {
+export default function TaskModal({ projectId, taskId, members = [], onClose }: Props) {
   const isEditing = !!taskId
   const { defaultTaskStatus } = useUIStore()
 
@@ -45,13 +52,18 @@ export default function TaskModal({ projectId, taskId, onClose }: Props) {
   const [description, setDescription] = useState('')
   const [status, setStatus] = useState<TaskStatus>(defaultTaskStatus ?? 'backlog')
   const [priority, setPriority] = useState<TaskPriority>('none')
+  const [assigneeId, setAssigneeId] = useState('')
+  const [dueDate, setDueDate] = useState('')
   const [loading, setLoading] = useState(false)
   const [statusOpen, setStatusOpen] = useState(false)
   const [priorityOpen, setPriorityOpen] = useState(false)
+  const [assigneeOpen, setAssigneeOpen] = useState(false)
 
   const createTask = useCreateTask()
   const updateTask = useUpdateTask(projectId)
   const deleteTask = useDeleteTask(projectId)
+
+  const selectedAssignee = members.find((m) => m.id === assigneeId) ?? null
 
   useEffect(() => {
     if (taskId) {
@@ -65,6 +77,8 @@ export default function TaskModal({ projectId, taskId, onClose }: Props) {
           setDescription(t.description)
           setStatus(t.status)
           setPriority(t.priority)
+          setAssigneeId(t.assignee?.id ?? '')
+          setDueDate(toDateInputValue(t.dueDate))
         })
         .finally(() => setLoading(false))
     }
@@ -73,15 +87,23 @@ export default function TaskModal({ projectId, taskId, onClose }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!title.trim()) return
+    const shared = {
+      title,
+      description,
+      status,
+      priority,
+      assigneeId: assigneeId || undefined,
+      dueDate: dueDate || undefined,
+    }
     try {
       if (isEditing && task) {
         await updateTask.mutateAsync({
           id: task.id,
-          data: { title, description, status, priority },
+          data: { ...shared, dueDate: dueDate || null },
         })
         toast.success('Tarea actualizada')
       } else {
-        await createTask.mutateAsync({ title, description, status, priority, projectId })
+        await createTask.mutateAsync({ ...shared, projectId })
         toast.success('Tarea creada')
       }
       onClose()
@@ -148,6 +170,7 @@ export default function TaskModal({ projectId, taskId, onClose }: Props) {
                     onClick={() => {
                       setStatusOpen((o) => !o)
                       setPriorityOpen(false)
+                      setAssigneeOpen(false)
                     }}
                     className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-surface-border bg-surface text-xs hover:bg-surface-overlay transition-colors"
                   >
@@ -184,6 +207,7 @@ export default function TaskModal({ projectId, taskId, onClose }: Props) {
                     onClick={() => {
                       setPriorityOpen((o) => !o)
                       setStatusOpen(false)
+                      setAssigneeOpen(false)
                     }}
                     className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-surface-border bg-surface text-xs hover:bg-surface-overlay transition-colors"
                   >
@@ -212,6 +236,74 @@ export default function TaskModal({ projectId, taskId, onClose }: Props) {
                     </div>
                   )}
                 </div>
+
+                {/* Assignee dropdown */}
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAssigneeOpen((o) => !o)
+                      setStatusOpen(false)
+                      setPriorityOpen(false)
+                    }}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-surface-border bg-surface text-xs hover:bg-surface-overlay transition-colors"
+                  >
+                    {selectedAssignee ? (
+                      <Avatar name={selectedAssignee.name} size="sm" />
+                    ) : (
+                      <User className="w-3.5 h-3.5 text-content-disabled" />
+                    )}
+                    <span className="text-content-secondary">
+                      {selectedAssignee ? selectedAssignee.name : 'Sin asignar'}
+                    </span>
+                  </button>
+                  {assigneeOpen && (
+                    <div className="absolute top-full left-0 mt-1 z-10 bg-surface-elevated border border-surface-border rounded shadow-dropdown py-1 min-w-40">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAssigneeId('')
+                          setAssigneeOpen(false)
+                        }}
+                        className={clsx(
+                          'w-full text-left flex items-center gap-2 px-3 py-1.5 text-xs hover:bg-surface-border transition-colors',
+                          !assigneeId ? 'text-content-primary' : 'text-content-secondary'
+                        )}
+                      >
+                        <User className="w-3.5 h-3.5 text-content-disabled" />
+                        Sin asignar
+                      </button>
+                      {members.map((m) => (
+                        <button
+                          key={m.id}
+                          type="button"
+                          onClick={() => {
+                            setAssigneeId(m.id)
+                            setAssigneeOpen(false)
+                          }}
+                          className={clsx(
+                            'w-full text-left flex items-center gap-2 px-3 py-1.5 text-xs hover:bg-surface-border transition-colors',
+                            assigneeId === m.id ? 'text-content-primary' : 'text-content-secondary'
+                          )}
+                        >
+                          <Avatar name={m.name} size="sm" />
+                          {m.name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Due date */}
+                <label className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-surface-border bg-surface text-xs hover:bg-surface-overlay transition-colors cursor-pointer">
+                  <span className="text-content-secondary">Fecha límite</span>
+                  <input
+                    type="date"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
+                    className="bg-transparent text-content-secondary text-xs focus:outline-none [color-scheme:dark]"
+                  />
+                </label>
               </div>
 
               {/* Footer */}
@@ -250,7 +342,7 @@ export default function TaskModal({ projectId, taskId, onClose }: Props) {
           <Dialog.Close asChild>
             <button
               className="absolute top-4 right-4 text-content-disabled hover:text-content-secondary transition-colors"
-              aria-label="Close"
+              aria-label="Cerrar"
             >
               <X className="w-4 h-4" />
             </button>

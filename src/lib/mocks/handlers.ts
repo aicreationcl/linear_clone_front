@@ -15,8 +15,8 @@ const mockProject = {
   description: 'A Linear-inspired project manager',
   identifier: 'LC',
   color: '#5e6ad2',
-  owner: 'user-1',
-  members: ['user-1'],
+  owner: mockUser,
+  members: [mockUser],
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-01T00:00:00.000Z',
 }
@@ -95,12 +95,26 @@ export const handlers = [
     })
   }),
 
+  http.patch(`${API_URL}/projects/:id`, async ({ params, request }) => {
+    const body = (await request.json()) as Record<string, unknown>
+    return HttpResponse.json({ data: { ...mockProject, ...body, id: params.id } })
+  }),
+
+  http.delete(`${API_URL}/projects/:id`, () => {
+    return HttpResponse.json({ message: 'Project deleted' })
+  }),
+
   http.get(`${API_URL}/tasks`, () => {
     return HttpResponse.json({ data: mockTasks })
   }),
 
+  http.get(`${API_URL}/tasks/:id`, ({ params }) => {
+    const task = mockTasks.find((t) => t.id === params.id) ?? mockTasks[0]
+    return HttpResponse.json({ data: { ...task, id: params.id } })
+  }),
+
   http.post(`${API_URL}/tasks`, async ({ request }) => {
-    const body = (await request.json()) as Record<string, unknown>
+    const { assigneeId, ...body } = (await request.json()) as Record<string, unknown>
     return HttpResponse.json(
       {
         data: {
@@ -110,6 +124,8 @@ export const handlers = [
           status: body.status ?? 'backlog',
           priority: body.priority ?? 'none',
           project: body.project ?? 'project-1',
+          assignee: assigneeId ? mockUser : undefined,
+          dueDate: body.dueDate,
           reporter: 'user-1',
           order: 1,
           createdAt: new Date().toISOString(),
@@ -121,9 +137,16 @@ export const handlers = [
   }),
 
   http.patch(`${API_URL}/tasks/:id`, async ({ params, request }) => {
-    const body = (await request.json()) as Record<string, unknown>
+    const { assigneeId, ...body } = (await request.json()) as Record<string, unknown>
     const task = mockTasks.find((t) => t.id === params.id) ?? mockTasks[0]
-    return HttpResponse.json({ data: { ...task, ...body, id: params.id } })
+    return HttpResponse.json({
+      data: {
+        ...task,
+        ...body,
+        assignee: assigneeId ? mockUser : undefined,
+        id: params.id,
+      },
+    })
   }),
 
   http.patch(`${API_URL}/tasks/:id/status`, async ({ params, request }) => {

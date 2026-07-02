@@ -13,8 +13,8 @@ export interface UIProject {
   description?: string
   identifier: string
   color: string
-  owner: string
-  members: string[]
+  owner: string | UIUser
+  members: (string | UIUser)[]
   createdAt: Date
   updatedAt: Date
 }
@@ -44,4 +44,8 @@ export interface FilterState {
 
 export function isAPIUser(v: unknown): v is APIUser {
   return typeof v === 'object' && v !== null && 'email' in v
+}
+
+export function isUIUser(v: string | UIUser): v is UIUser {
+  return typeof v === 'object'
 }

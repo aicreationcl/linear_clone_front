@@ -94,7 +94,7 @@ export default function CommandPalette({ open, onClose }: Props) {
               )}
 
               <Command.Group
-                heading="Actions"
+                heading="Acciones"
                 className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:pt-2 [&_[cmdk-group-heading]]:pb-1 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:text-content-disabled [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.08em]"
               >
                 <Command.Item

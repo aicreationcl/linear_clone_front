@@ -15,8 +15,8 @@ export interface APIProject {
   description?: string
   identifier: string
   color?: string
-  owner: string
-  members: string[]
+  owner: string | APIUser
+  members: (string | APIUser)[]
   createdAt: string
   updatedAt: string
 }
